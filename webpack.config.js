@@ -11,6 +11,8 @@ var banner = [
 var header = _.template( banner )( { pkg: pkg } );
 
 module.exports = {
+	mode: "production",
+	entry: "./src/index.js",
 	output: {
 		library: "postalXframe",
 		libraryTarget: "umd",
@@ -28,22 +30,21 @@ module.exports = {
 			}
 		}
 	],
+	devtool: false,
 	module: {
-		loaders: [
+		rules: [
 			{
-				test: /\.js?$/,
+				test: /\.m?js$/,
 				exclude: /(node_modules|bower_components)/,
-				loader: "babel",
-				query: {
-					auxiliaryComment: "istanbul ignore next",
-					compact: false,
-					blacklist: [ "strict" ],
-					experimental: true
+				use: {
+					loader: "babel-loader",
+					options: {
+						presets: [ "@babel/preset-env" ],
+						plugins: [ "@babel/plugin-transform-runtime" ]
+					}
 				}
 			}
 		]
 	},
-	plugins: [
-		new webpack.BannerPlugin( header )
-	]
+	plugins: [ new webpack.BannerPlugin( header ) ]
 };
